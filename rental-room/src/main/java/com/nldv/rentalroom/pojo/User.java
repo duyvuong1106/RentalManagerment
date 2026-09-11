@@ -2,34 +2,20 @@ package com.nldv.rentalroom.pojo;
 
 import com.nldv.rentalroom.enums.UserRole;
 import com.nldv.rentalroom.enums.UserStatus;
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+public class User extends BaseEntity {
 
     @NotBlank
     @Size(max = 100)
@@ -79,49 +65,19 @@ public class User implements Serializable {
     @Column(name = "avatar_public_id")
     private String avatarPublicId;
 
-    @Column(name = "created_date", nullable = false)
-    private Date createdDate;
-
-    @Column(name = "updated_date")
-    private Date updatedDate;
+    @OneToMany(mappedBy = "user")
+    private Collection<RentalRequest> rentalRequests;
 
     @OneToMany(mappedBy = "user")
-    private Collection<RentalRequest> rentalRequestsCollection;
+    private Collection<Contract> contracts;
 
     @OneToMany(mappedBy = "user")
-    private Collection<Contract> contractsCollection;
+    private Collection<Review> reviews;
 
     @OneToMany(mappedBy = "user")
-    private Collection<Review> reviewsCollection;
-
-    @OneToMany(mappedBy = "user")
-    private Collection<Notification> notificationsCollection;
+    private Collection<Notification> notifications;
 
     public User() {
-    }
-
-    public User(Integer id) {
-        this.id = id;
-    }
-
-    public User(Integer id, String username, String password,
-            String email, UserRole role, UserStatus status,
-            Date createdDate) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.status = status;
-        this.createdDate = createdDate;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -212,56 +168,36 @@ public class User implements Serializable {
         this.avatarPublicId = avatarPublicId;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Collection<RentalRequest> getRentalRequests() {
+        return rentalRequests;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setRentalRequests(Collection<RentalRequest> rentalRequests) {
+        this.rentalRequests = rentalRequests;
     }
 
-    public Date getUpdatedDate() {
-        return updatedDate;
+    public Collection<Contract> getContracts() {
+        return contracts;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setContracts(Collection<Contract> contracts) {
+        this.contracts = contracts;
     }
 
-    public Collection<RentalRequest> getRentalRequestsCollection() {
-        return rentalRequestsCollection;
+    public Collection<Review> getReviews() {
+        return reviews;
     }
 
-    public void setRentalRequestsCollection(
-            Collection<RentalRequest> rentalRequestsCollection) {
-        this.rentalRequestsCollection = rentalRequestsCollection;
+    public void setReviews(Collection<Review> reviews) {
+        this.reviews = reviews;
     }
 
-    public Collection<Contract> getContractsCollection() {
-        return contractsCollection;
+    public Collection<Notification> getNotifications() {
+        return notifications;
     }
 
-    public void setContractsCollection(
-            Collection<Contract> contractsCollection) {
-        this.contractsCollection = contractsCollection;
-    }
-
-    public Collection<Review> getReviewsCollection() {
-        return reviewsCollection;
-    }
-
-    public void setReviewsCollection(
-            Collection<Review> reviewsCollection) {
-        this.reviewsCollection = reviewsCollection;
-    }
-
-    public Collection<Notification> getNotificationsCollection() {
-        return notificationsCollection;
-    }
-
-    public void setNotificationsCollection(
-            Collection<Notification> notificationsCollection) {
-        this.notificationsCollection = notificationsCollection;
+    public void setNotifications(Collection<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     @Override
@@ -287,6 +223,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nldv.rentalroom.pojo.User[ id=" + id + " ]";
+        return "User{" + "id=" + id + ", username=" + username + '}';
     }
 }

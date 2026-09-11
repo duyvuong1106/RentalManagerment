@@ -2,9 +2,11 @@ package com.nldv.rentalroom.pojo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.Collection;
 
 @Entity
 @Table(name = "amenities")
@@ -21,6 +23,9 @@ public class Amenity extends BaseEntity {
 
     @Column(name = "status", nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "amenity")
+    private Collection<RoomAmenity> roomAmenities;
 
     public Amenity() {
     }
@@ -47,6 +52,14 @@ public class Amenity extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Collection<RoomAmenity> getRoomAmenities() {
+        return roomAmenities;
+    }
+
+    public void setRoomAmenities(Collection<RoomAmenity> roomAmenities) {
+        this.roomAmenities = roomAmenities;
     }
 
     @Override

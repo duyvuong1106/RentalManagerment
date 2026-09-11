@@ -1,6 +1,5 @@
 package com.nldv.rentalroom.pojo;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +15,6 @@ public abstract class BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "id")
     protected Integer id;
 

@@ -1,6 +1,5 @@
 package com.nldv.rentalroom.pojo;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -14,6 +13,8 @@ import java.io.Serializable;
 @Table(name = "room_amenities")
 @IdClass(RoomAmenity.RoomAmenityId.class)
 public class RoomAmenity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,13 +53,16 @@ public class RoomAmenity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (room != null ? room.hashCode() : 0);
-        hash += (amenity != null ? amenity.hashCode() : 0);
+
+        hash += room != null ? room.hashCode() : 0;
+        hash += amenity != null ? amenity.hashCode() : 0;
+
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
+
         if (!(object instanceof RoomAmenity)) {
             return false;
         }
@@ -80,14 +84,15 @@ public class RoomAmenity implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nldv.rentalroom.pojo.RoomAmenity[ room="
-                + room + ", amenity=" + amenity + " ]";
+        return "RoomAmenity{"
+                + "room=" + room
+                + ", amenity=" + amenity
+                + '}';
     }
 
-    /**
-     * Composite primary key
-     */
     public static class RoomAmenityId implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private Integer room;
         private Integer amenity;
@@ -119,13 +124,16 @@ public class RoomAmenity implements Serializable {
         @Override
         public int hashCode() {
             int hash = 0;
-            hash += (room != null ? room.hashCode() : 0);
-            hash += (amenity != null ? amenity.hashCode() : 0);
+
+            hash += room != null ? room.hashCode() : 0;
+            hash += amenity != null ? amenity.hashCode() : 0;
+
             return hash;
         }
 
         @Override
         public boolean equals(Object object) {
+
             if (!(object instanceof RoomAmenityId)) {
                 return false;
             }
