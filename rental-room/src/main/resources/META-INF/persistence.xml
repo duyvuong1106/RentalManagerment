@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence           http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+  <persistence-unit name="com.nldv_rental-room_jar_0.0.1-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.nldv.rentalroom.pojo.User</class>
+    <class>com.nldv.rentalroom.pojo.Area</class>
+    <class>com.nldv.rentalroom.pojo.RoomType</class>
+    <class>com.nldv.rentalroom.pojo.Amenity</class>
+    <class>com.nldv.rentalroom.pojo.Service</class>
+    <class>com.nldv.rentalroom.pojo.Room</class>
+    <class>com.nldv.rentalroom.pojo.RoomImage</class>
+    <class>com.nldv.rentalroom.pojo.RentalRequest</class>
+    <class>com.nldv.rentalroom.pojo.Contract</class>
+    <class>com.nldv.rentalroom.pojo.Invoice</class>
+    <class>com.nldv.rentalroom.pojo.InvoiceDetail</class>
+    <class>com.nldv.rentalroom.pojo.Payment</class>
+    <class>com.nldv.rentalroom.pojo.Review</class>
+    <class>com.nldv.rentalroom.pojo.Notification</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/rental_room?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="abc123"/>
+    </properties>
+  </persistence-unit>
+</persistence>
