@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -21,7 +23,7 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "created_date", nullable = false)
     protected LocalDateTime createdDate;
 
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = false)
     protected LocalDateTime updatedDate;
 
     public Integer getId() {
@@ -46,5 +48,17 @@ public abstract class BaseEntity implements Serializable {
 
     public void setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        createdDate = now;
+        updatedDate = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedDate = LocalDateTime.now();
     }
 }

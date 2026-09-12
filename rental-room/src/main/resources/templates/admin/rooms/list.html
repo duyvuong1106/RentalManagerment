@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>Quản lý phòng</title>
+
+    <div th:if="${successMessage}"
+         style="padding: 12px 16px;
+         margin-bottom: 20px;
+         background-color: #d1fae5;
+         color: #065f46;
+         border: 1px solid #a7f3d0;
+         border-radius: 8px;
+         font-weight: 500;"
+         th:text="${successMessage}">
+    </div>
+    <script>
+        setTimeout(function () {
+            const message = document.getElementById("successMessage");
+
+            if (message) {
+                message.style.transition = "opacity 0.5s";
+                message.style.opacity = "0";
+
+                setTimeout(function () {
+                    message.remove();
+                }, 500);
+            }
+        }, 2000);
+    </script>
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #222;
+        }
+
+        .page-header p {
+            margin: 7px 0 0;
+            color: #777;
+        }
+
+        .btn-add {
+            display: inline-block;
+            padding: 11px 18px;
+            background-color: #198754;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-add:hover {
+            background-color: #157347;
+        }
+
+        /* Card */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 13px;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Image */
+        .room-image {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .no-image {
+            width: 80px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eee;
+            color: #888;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* Room */
+        .room-number {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .room-title {
+            font-weight: 500;
+        }
+
+        /* Price */
+        .price {
+            font-weight: bold;
+            color: #dc3545;
+            white-space: nowrap;
+        }
+
+        /* Status */
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-available {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-rented {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-edit:hover {
+            background-color: #ffca2c;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #bb2d3b;
+        }
+
+        /* Empty */
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .container {
+                width: 98%;
+                margin: 15px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h1>Quản lý phòng</h1>
+                <p>Danh sách các phòng trọ trong hệ thống</p>
+            </div>
+
+            <a href="/admin/rooms/create" class="btn-add">
+                + Thêm phòng
+            </a>
+        </div>
+
+        <!-- Table Card -->
+        <div class="card">
+
+            <div class="card-header">
+                Danh sách phòng
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th class="text-center">STT</th>
+                            <th class="text-center">Hình ảnh</th>
+                            <th>Mã phòng</th>
+                            <th>Tiêu đề</th>
+                            <th>Loại phòng</th>
+                            <th>Khu vực</th>
+                            <th>Diện tích</th>
+                            <th>Giá thuê</th>
+                            <th>Trạng thái</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- Có dữ liệu -->
+                        <tr th:each="room, stat : ${rooms}">
+
+                            <!-- STT -->
+                            <td class="text-center"
+                                th:text="${stat.count}">
+                                1
+                            </td>
+
+                            <!-- Hình ảnh -->
+                            <td class="text-center">
+
+                                <div th:if="${room.roomImages != null and !room.roomImages.isEmpty()}">
+
+                                    <img class="room-image"
+                                         th:src="${room.roomImages[0].imageUrl}"
+                                         alt="Ảnh phòng">
+
+                                </div>
+
+                                <div class="no-image"
+                                     th:if="${room.roomImages == null or room.roomImages.isEmpty()}">
+                                    Chưa có ảnh
+                                </div>
+
+                            </td>
+
+                            <!-- Mã phòng -->
+                            <td>
+                                <span class="room-number"
+                                      th:text="${room.roomNumber}">
+                                    P101
+                                </span>
+                            </td>
+
+                            <!-- Tiêu đề -->
+                            <td>
+                                <span class="room-title"
+                                      th:text="${room.title}">
+                                    Phòng trọ giá rẻ
+                                </span>
+                            </td>
+
+                            <!-- Loại phòng -->
+                            <td th:text="${room.roomType != null ? room.roomType.name : 'Chưa xác định'}">
+                                Phòng đơn
+                            </td>
+
+                            <!-- Khu vực -->
+                            <td th:text="${room.area != null ? room.area.name : 'Chưa xác định'}">
+                                Quận 12
+                            </td>
+
+                            <!-- Diện tích -->
+                            <td>
+                                <span th:text="${room.areaSize}">20</span>
+                                m²
+                            </td>
+
+                            <!-- Giá -->
+                            <td>
+                                <span class="price"
+                                      th:text="${#numbers.formatInteger(room.price, 0, 'COMMA')} + ' VNĐ'">
+                                    2,800,000 VNĐ
+                                </span>
+                            </td>
+
+                            <!-- Trạng thái -->
+                            <td>
+
+                                <span class="status status-available"
+                                      th:if="${room.status.name() == 'AVAILABLE'}">
+                                    Còn trống
+                                </span>
+
+                                <span class="status status-rented"
+                                      th:if="${room.status.name() == 'RENTED'}">
+                                    Đã thuê
+                                </span>
+
+                                <span class="status status-pending"
+                                      th:if="${room.status.name() == 'PENDING'}">
+                                    Đang chờ
+                                </span>
+
+                            </td>
+
+                            <!-- Thao tác -->
+                            <td class="text-center">
+
+                                <div class="actions">
+
+                                    <a class="btn btn-edit"
+                                       th:href="@{/admin/rooms/edit/{id}(id=${room.id})}">
+                                        Sửa
+                                    </a>
+
+                                    <a class="btn btn-delete"
+                                       th:href="@{/admin/rooms/delete/{id}(id=${room.id})}"
+                                       onclick="return confirm('Bạn có chắc muốn xóa phòng này không?');">
+                                        Xóa
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- Không có dữ liệu -->
+                        <tr th:if="${rooms == null or rooms.isEmpty()}">
+
+                            <td colspan="10" class="empty">
+                                Chưa có phòng nào trong hệ thống.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
