@@ -2,6 +2,8 @@ package com.nldv.rentalroom.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,17 +18,33 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration)
             throws Exception {
 
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
+
         http
+            // REST API không sử dụng CSRF token
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+            )
+
             .authorizeHttpRequests(auth -> auth
 
                 
                 .requestMatchers(
-                    "/",
-                    "/login",
-                    "/register",
+                    "/api/auth/register",
+                    "/api/auth/login"
+                ).permitAll()
+
+                
+                .requestMatchers(
                     "/css/**",
                     "/js/**",
                     "/images/**"
@@ -37,26 +55,29 @@ public class SecurityConfig {
                 .hasRole("ADMINISTRATOR")
 
                
-                .requestMatchers("/landlord/**")
-                .hasRole("LANDLORD")
-
-                
-                .requestMatchers("/customer/**")
+                .requestMatchers("/api/customer/**")
                 .hasRole("CUSTOMER")
 
                 
+                .requestMatchers("/api/landlord/**")
+                .hasRole("LANDLORD")
+
+                
+                .requestMatchers("/api/users/**")
+                .hasRole("ADMINISTRATOR")
+
+            
                 .anyRequest()
                 .authenticated()
             )
 
-           
+            
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/admin/rooms", true)
                 .permitAll()
             )
 
-            
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
