@@ -7,6 +7,7 @@ import com.nldv.rentalroom.repository.UserRepository;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.nldv.rentalroom.dto.UserUpdateRequest;
 
 @Service
 public class UserService {
@@ -95,5 +96,66 @@ public class UserService {
     public void changePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    public User updateUser(
+            Integer id,
+            UserUpdateRequest request) {
+
+        User user = findById(id);
+
+        if (user == null) {
+            throw new IllegalArgumentException(
+                    "Không tìm thấy người dùng"
+            );
+        }
+
+        if (request.getEmail() != null
+                && !request.getEmail().equals(user.getEmail())
+                && existsByEmail(request.getEmail())) {
+
+            throw new IllegalArgumentException(
+                    "Email đã tồn tại"
+            );
+        }
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+
+        if (request.getRole() != null) {
+            try {
+                user.setRole(
+                        UserRole.valueOf(
+                                request.getRole().toUpperCase()
+                        )
+                );
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(
+                        "Role không hợp lệ"
+                );
+            }
+        }
+
+        return userRepository.save(user);
+    }
+
+    public User changeStatus(
+            Integer id,
+            UserStatus status) {
+
+        User user = findById(id);
+
+        if (user == null) {
+            throw new IllegalArgumentException(
+                    "Không tìm thấy người dùng"
+            );
+        }
+
+        user.setStatus(status);
+
+        return userRepository.save(user);
     }
 }

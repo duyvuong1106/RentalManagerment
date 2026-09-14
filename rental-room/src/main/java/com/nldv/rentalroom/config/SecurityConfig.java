@@ -2,6 +2,7 @@ package com.nldv.rentalroom.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,59 +31,87 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-            // REST API không sử dụng CSRF token
-            .csrf(csrf -> csrf
+                .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/api/**")
-            )
-
-            .authorizeHttpRequests(auth -> auth
-
-                
+                )
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login"
+                        "/api/auth/register",
+                        "/api/auth/login"
                 ).permitAll()
-
-                
                 .requestMatchers(
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
+                        HttpMethod.GET,
+                        "/api/areas",
+                        "/api/areas/**",
+                        "/api/room-types",
+                        "/api/room-types/**",
+                        "/api/amenities",
+                        "/api/amenities/**"
                 ).permitAll()
-
-                
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/areas"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/room-types"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/amenities"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.PUT,
+                        "/api/areas/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.PUT,
+                        "/api/room-types/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.PUT,
+                        "/api/amenities/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.DELETE,
+                        "/api/areas/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.DELETE,
+                        "/api/room-types/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        HttpMethod.DELETE,
+                        "/api/amenities/**"
+                ).hasRole("ADMINISTRATOR")
+                .requestMatchers(
+                        "/css/**",
+                        "/js/**",
+                        "/images/**"
+                ).permitAll()
                 .requestMatchers("/admin/**")
                 .hasRole("ADMINISTRATOR")
-
-               
                 .requestMatchers("/api/customer/**")
                 .hasRole("CUSTOMER")
-
-                
                 .requestMatchers("/api/landlord/**")
                 .hasRole("LANDLORD")
-
-                
                 .requestMatchers("/api/users/**")
                 .hasRole("ADMINISTRATOR")
-
-            
                 .anyRequest()
                 .authenticated()
-            )
-
-            
-            .formLogin(form -> form
+                )
+                .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/admin/rooms", true)
                 .permitAll()
-            )
-
-            .logout(logout -> logout
+                )
+                .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
                 .permitAll()
-            );
+                );
 
         return http.build();
     }

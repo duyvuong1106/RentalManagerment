@@ -18,4 +18,16 @@ public class AreaService {
     public List<Area> findAll() {
         return areaRepository.findAll();
     }
+
+    public Area findById(Integer id) {
+        return areaRepository.findById(id).orElse(null);
+    }
+
+    public Area save(Area area) {
+        return areaRepository.save(area);
+    }
+
+    public void deleteById(Integer id) {
+        areaRepository.deleteById(id);
+    }
 }
