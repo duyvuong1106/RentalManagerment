@@ -27,6 +27,12 @@ public interface ContractRepository
             ContractStatus status
     );
 
+    boolean existsByUserIdAndRoomLandlordIdAndStatus(Integer userId, Integer landlordId, ContractStatus status);
+
+    long countByStatus(ContractStatus status);
+
+    long countByRoomLandlordIdAndStatus(Integer landlordId, ContractStatus status);
+
     List<Contract> findByStatusAndEndDateBefore(
             ContractStatus status,
             LocalDate date

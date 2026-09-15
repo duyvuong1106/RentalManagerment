@@ -23,6 +23,7 @@ public class RoomResponse {
     private BigDecimal areaSize;
     private Integer price;
     private String status;
+    private String approvalStatus;
 
     private Integer areaId;
     private String areaName;
@@ -53,6 +54,10 @@ public class RoomResponse {
 
         if (room.getStatus() != null) {
             response.status = room.getStatus().name();
+        }
+
+        if (room.getApprovalStatus() != null) {
+            response.approvalStatus = room.getApprovalStatus().name();
         }
 
         if (room.getArea() != null) {
@@ -106,6 +111,10 @@ public class RoomResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
     }
 
     public Integer getAreaId() {

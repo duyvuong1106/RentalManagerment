@@ -107,10 +107,25 @@ public class SecurityConfig {
                         "/api/customer/**"
                 ).hasRole("CUSTOMER")
 
+                .requestMatchers(
+                        "/api/profile",
+                        "/api/profile/**"
+                ).authenticated()
+
                 
                 .requestMatchers(
                         "/api/admin/reviews",
                         "/api/admin/reviews/**"
+                ).hasRole("ADMINISTRATOR")
+
+                .requestMatchers(
+                        "/api/admin/rooms",
+                        "/api/admin/rooms/**"
+                ).hasRole("ADMINISTRATOR")
+
+                .requestMatchers(
+                        "/api/admin/statistics",
+                        "/api/admin/statistics/**"
                 ).hasRole("ADMINISTRATOR")
 
                 

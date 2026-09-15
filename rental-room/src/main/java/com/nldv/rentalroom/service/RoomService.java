@@ -4,6 +4,7 @@ import com.nldv.rentalroom.dto.RoomCreateRequest;
 import com.nldv.rentalroom.dto.RoomResponse;
 import com.nldv.rentalroom.dto.RoomUpdateRequest;
 import com.nldv.rentalroom.enums.RoomStatus;
+import com.nldv.rentalroom.enums.RoomApprovalStatus;
 import com.nldv.rentalroom.pojo.Area;
 import com.nldv.rentalroom.pojo.Room;
 import com.nldv.rentalroom.pojo.RoomType;
@@ -112,6 +113,7 @@ public class RoomService {
         );
 
         room.setStatus(RoomStatus.AVAILABLE);
+        room.setApprovalStatus(RoomApprovalStatus.PENDING);
 
         Room savedRoom = roomRepository.save(room);
 
@@ -256,7 +258,10 @@ public class RoomService {
     public List<RoomResponse> getPublicRooms() {
 
         return roomRepository
-                .findByStatus(RoomStatus.AVAILABLE)
+                .searchAvailableRooms(
+                        RoomStatus.AVAILABLE,
+                        RoomApprovalStatus.APPROVED,
+                        null, null, null, null, null, null, null)
                 .stream()
                 .map(RoomResponse::fromEntity)
                 .toList();
@@ -271,6 +276,76 @@ public class RoomService {
                         "Không tìm thấy phòng"));
 
         return RoomResponse.fromEntity(room);
+    }
+
+    // =========================
+    // PUBLIC SEARCH
+    // =========================
+    public List<RoomResponse> searchPublicRooms(
+            Integer areaId,
+            Integer roomTypeId,
+            Integer minPrice,
+            Integer maxPrice,
+            java.math.BigDecimal minArea,
+            java.math.BigDecimal maxArea,
+            Integer amenityId) {
+
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("Giá tối thiểu không được lớn hơn giá tối đa");
+        }
+        if (minArea != null && maxArea != null && minArea.compareTo(maxArea) > 0) {
+            throw new IllegalArgumentException("Diện tích tối thiểu không được lớn hơn diện tích tối đa");
+        }
+        if (minPrice != null && minPrice < 0 || maxPrice != null && maxPrice < 0) {
+            throw new IllegalArgumentException("Giá không được âm");
+        }
+
+        return roomRepository.searchAvailableRooms(
+                RoomStatus.AVAILABLE,
+                RoomApprovalStatus.APPROVED,
+                areaId, roomTypeId, minPrice, maxPrice, minArea, maxArea, amenityId)
+                .stream()
+                .map(RoomResponse::fromEntity)
+                .toList();
+    }
+
+    // =========================
+    // ADMIN APPROVAL
+    // =========================
+    public List<RoomResponse> getPendingApprovalRooms() {
+        return roomRepository.findByApprovalStatus(RoomApprovalStatus.PENDING)
+                .stream()
+                .map(RoomResponse::fromEntity)
+                .toList();
+    }
+
+    @Transactional
+    public RoomResponse approveRoom(Integer roomId) {
+        Room room = findById(roomId);
+        if (room == null) {
+            throw new IllegalArgumentException("Không tìm thấy phòng");
+        }
+        if (room.getApprovalStatus() == RoomApprovalStatus.APPROVED) {
+            throw new IllegalArgumentException("Phòng đã được duyệt");
+        }
+        room.setApprovalStatus(RoomApprovalStatus.APPROVED);
+        if (room.getStatus() == null) {
+            room.setStatus(RoomStatus.AVAILABLE);
+        }
+        return RoomResponse.fromEntity(roomRepository.save(room));
+    }
+
+    @Transactional
+    public RoomResponse rejectRoom(Integer roomId) {
+        Room room = findById(roomId);
+        if (room == null) {
+            throw new IllegalArgumentException("Không tìm thấy phòng");
+        }
+        if (room.getApprovalStatus() == RoomApprovalStatus.REJECTED) {
+            throw new IllegalArgumentException("Phòng đã bị từ chối");
+        }
+        room.setApprovalStatus(RoomApprovalStatus.REJECTED);
+        return RoomResponse.fromEntity(roomRepository.save(room));
     }
 
     // =========================

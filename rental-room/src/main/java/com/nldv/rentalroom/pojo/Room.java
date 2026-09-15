@@ -1,6 +1,7 @@
 package com.nldv.rentalroom.pojo;
 
 import com.nldv.rentalroom.enums.RoomStatus;
+import com.nldv.rentalroom.enums.RoomApprovalStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -47,6 +48,10 @@ public class Room extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private RoomStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status", nullable = false)
+    private RoomApprovalStatus approvalStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_id", nullable = false)
@@ -132,6 +137,14 @@ public class Room extends BaseEntity {
 
     public void setStatus(RoomStatus status) {
         this.status = status;
+    }
+
+    public RoomApprovalStatus getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(RoomApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
     public Area getArea() {

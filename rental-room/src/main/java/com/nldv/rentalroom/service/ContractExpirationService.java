@@ -82,6 +82,16 @@ public class ContractExpirationService {
                                 "CONTRACT"
                         );
             }
+
+            if (contract.getRoom() != null
+                    && contract.getRoom().getLandlord() != null) {
+                notificationService.createNotification(
+                        contract.getRoom().getLandlord().getId(),
+                        "Hợp đồng đã hết hạn",
+                        "Hợp đồng phòng " + contract.getRoom().getRoomNumber() + " đã hết hạn và phòng đã được chuyển về trạng thái AVAILABLE.",
+                        "CONTRACT"
+                );
+            }
         }
     }
 }

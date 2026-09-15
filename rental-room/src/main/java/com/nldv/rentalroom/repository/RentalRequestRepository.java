@@ -19,6 +19,10 @@ public interface RentalRequestRepository
             Integer roomId,
             RentalRequestStatus status);
 
+    long countByStatus(RentalRequestStatus status);
+
+    long countByRoomLandlordIdAndStatus(Integer landlordId, RentalRequestStatus status);
+
     boolean existsByUserIdAndRoomIdAndStatus(
             Integer userId,
             Integer roomId,
