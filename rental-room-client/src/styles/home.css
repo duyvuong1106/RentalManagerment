@@ -1,0 +1,56 @@
+.home-hero {
+  background: linear-gradient(135deg, #eef5ff 0%, #fff 55%, #f4f9ff 100%);
+}
+.hero-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid #e9ecef;
+}
+.hero-card-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e7f1ff;
+  color: #0d6efd;
+  font-size: 32px;
+}
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #f8f9fa;
+}
+.search-box {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 24px;
+}
+.feature-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  border: 1px solid #e9ecef;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
