@@ -39,7 +39,6 @@ public class RoomService {
     // =========================
     // ADMIN / COMMON
     // =========================
-
     public List<Room> findAll() {
         return roomRepository.findAll();
     }
@@ -59,7 +58,6 @@ public class RoomService {
     // =========================
     // LANDLORD
     // =========================
-
     public List<Room> findByLandlordId(Integer landlordId) {
         return roomRepository.findByLandlordId(landlordId);
     }
@@ -74,19 +72,19 @@ public class RoomService {
             RoomCreateRequest request) {
 
         User landlord = userRepository.findById(landlordId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Không tìm thấy chủ trọ"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Không tìm thấy chủ trọ"));
 
         Area area = areaRepository.findById(request.getAreaId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Khu vực không tồn tại"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Khu vực không tồn tại"));
 
         RoomType roomType = roomTypeRepository.findById(
                 request.getRoomTypeId()
-        ).orElseThrow(() ->
-                new IllegalArgumentException(
+        ).orElseThrow(()
+                -> new IllegalArgumentException(
                         "Loại phòng không tồn tại"));
 
         if (roomRepository.existsByRoomNumber(
@@ -99,38 +97,20 @@ public class RoomService {
         Room room = new Room();
 
         room.setRoomNumber(request.getRoomNumber());
+        room.setTitle(request.getTitle());
+        room.setDescription(request.getDescription());
+        room.setAddress(request.getAddress());
         room.setArea(area);
         room.setRoomType(roomType);
         room.setLandlord(landlord);
-
-        /*
-         * RoomCreateRequest hiện tại của bạn
-         * chưa có title, description, address.
-         *
-         * Vì vậy bước này chỉ tạo các field
-         * đúng với DTO hiện tại.
-         */
-
         room.setPrice(request.getPrice());
 
-        /*
-         * Room entity dùng BigDecimal cho areaSize
-         * nhưng RoomCreateRequest hiện tại đang dùng Double.
-         *
-         * Chúng ta chuyển sang BigDecimal ở đây.
-         */
         room.setAreaSize(
                 java.math.BigDecimal.valueOf(
                         request.getArea()
                 )
         );
 
-        /*
-         * Khi landlord tạo phòng mới,
-         * hệ thống mặc định phòng là AVAILABLE.
-         *
-         * Không cho client tự truyền status.
-         */
         room.setStatus(RoomStatus.AVAILABLE);
 
         Room savedRoom = roomRepository.save(room);
@@ -153,9 +133,9 @@ public class RoomService {
             Integer roomId) {
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Không tìm thấy phòng"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Không tìm thấy phòng"));
 
         checkOwnership(room, landlordId);
 
@@ -169,11 +149,23 @@ public class RoomService {
             RoomUpdateRequest request) {
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Không tìm thấy phòng"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Không tìm thấy phòng"));
 
         checkOwnership(room, landlordId);
+
+        if (request.getTitle() != null) {
+            room.setTitle(request.getTitle());
+        }
+
+        if (request.getDescription() != null) {
+            room.setDescription(request.getDescription());
+        }
+
+        if (request.getAddress() != null) {
+            room.setAddress(request.getAddress());
+        }
 
         if (room.getStatus() == RoomStatus.RENTED) {
             throw new IllegalArgumentException(
@@ -199,8 +191,8 @@ public class RoomService {
 
             Area area = areaRepository.findById(
                     request.getAreaId()
-            ).orElseThrow(() ->
-                    new IllegalArgumentException(
+            ).orElseThrow(()
+                    -> new IllegalArgumentException(
                             "Khu vực không tồn tại"));
 
             room.setArea(area);
@@ -208,11 +200,11 @@ public class RoomService {
 
         if (request.getRoomTypeId() != null) {
 
-            RoomType roomType =
-                    roomTypeRepository.findById(
+            RoomType roomType
+                    = roomTypeRepository.findById(
                             request.getRoomTypeId()
-                    ).orElseThrow(() ->
-                            new IllegalArgumentException(
+                    ).orElseThrow(()
+                            -> new IllegalArgumentException(
                                     "Loại phòng không tồn tại"));
 
             room.setRoomType(roomType);
@@ -231,8 +223,8 @@ public class RoomService {
             room.setPrice(request.getPrice());
         }
 
-        Room updatedRoom =
-                roomRepository.save(room);
+        Room updatedRoom
+                = roomRepository.save(room);
 
         return RoomResponse.fromEntity(
                 updatedRoom);
@@ -244,9 +236,9 @@ public class RoomService {
             Integer roomId) {
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Không tìm thấy phòng"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Không tìm thấy phòng"));
 
         checkOwnership(room, landlordId);
 
@@ -261,7 +253,6 @@ public class RoomService {
     // =========================
     // PUBLIC
     // =========================
-
     public List<RoomResponse> getPublicRooms() {
 
         return roomRepository
@@ -275,9 +266,9 @@ public class RoomService {
             Integer roomId) {
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Không tìm thấy phòng"));
+                .orElseThrow(()
+                        -> new IllegalArgumentException(
+                        "Không tìm thấy phòng"));
 
         return RoomResponse.fromEntity(room);
     }
@@ -285,7 +276,6 @@ public class RoomService {
     // =========================
     // PRIVATE
     // =========================
-
     private void checkOwnership(
             Room room,
             Integer landlordId) {

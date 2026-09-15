@@ -8,13 +8,14 @@ package com.nldv.rentalroom.dto;
  *
  * @author ASUS
  */
-
 import com.nldv.rentalroom.pojo.Area;
 
 public class AreaResponse {
 
     private Integer id;
     private String name;
+    private String description;
+    private String status;
 
     public AreaResponse() {
     }
@@ -25,6 +26,8 @@ public class AreaResponse {
 
         response.id = area.getId();
         response.name = area.getName();
+        response.description = area.getDescription();
+        response.status = area.getStatus();
 
         return response;
     }
@@ -35,5 +38,13 @@ public class AreaResponse {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

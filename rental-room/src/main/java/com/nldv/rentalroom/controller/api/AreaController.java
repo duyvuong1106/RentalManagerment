@@ -8,7 +8,6 @@ package com.nldv.rentalroom.controller.api;
  *
  * @author ASUS
  */
-
 import com.nldv.rentalroom.dto.AreaRequest;
 import com.nldv.rentalroom.dto.AreaResponse;
 import com.nldv.rentalroom.pojo.Area;
@@ -32,8 +31,8 @@ public class AreaController {
     @GetMapping
     public ResponseEntity<List<AreaResponse>> findAll() {
 
-        List<AreaResponse> result =
-                areaService.findAll()
+        List<AreaResponse> result
+                = areaService.findAll()
                         .stream()
                         .map(AreaResponse::fromEntity)
                         .collect(Collectors.toList());
@@ -63,6 +62,8 @@ public class AreaController {
         Area area = new Area();
 
         area.setName(request.getName());
+        area.setDescription(request.getDescription());
+        area.setStatus(request.getStatus());
 
         Area saved = areaService.save(area);
 
@@ -83,6 +84,8 @@ public class AreaController {
         }
 
         area.setName(request.getName());
+        area.setDescription(request.getDescription());
+        area.setStatus(request.getStatus());
 
         Area saved = areaService.save(area);
 
