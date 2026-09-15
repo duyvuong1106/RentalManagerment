@@ -77,6 +77,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private Collection<Notification> notifications;
 
+    @OneToMany(mappedBy = "landlord")
+    private Collection<Room> rooms;
+
     public User() {
     }
 
@@ -198,6 +201,14 @@ public class User extends BaseEntity {
 
     public void setNotifications(Collection<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    public Collection<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Collection<Room> rooms) {
+        this.rooms = rooms;
     }
 
     @Override

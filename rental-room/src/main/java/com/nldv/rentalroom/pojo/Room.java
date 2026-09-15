@@ -56,6 +56,10 @@ public class Room extends BaseEntity {
     @JoinColumn(name = "room_type_id", nullable = false)
     private RoomType roomType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "landlord_id", nullable = false)
+    private User landlord;
+
     @OneToMany(mappedBy = "room")
     private Collection<RoomImage> roomImages;
 
@@ -67,6 +71,9 @@ public class Room extends BaseEntity {
 
     @OneToMany(mappedBy = "room")
     private Collection<Contract> contracts;
+
+    @OneToMany(mappedBy = "room")
+    private Collection<Review> reviews;
 
     public Room() {
     }
@@ -141,6 +148,14 @@ public class Room extends BaseEntity {
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    public User getLandlord() {
+        return landlord;
+    }
+
+    public void setLandlord(User landlord) {
+        this.landlord = landlord;
     }
 
     public Collection<RoomImage> getRoomImages() {

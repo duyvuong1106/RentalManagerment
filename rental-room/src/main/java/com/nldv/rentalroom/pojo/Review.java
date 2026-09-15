@@ -18,6 +18,10 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
     @Min(1)
     @Max(5)
     @Column(name = "rating", nullable = false)
@@ -39,6 +43,14 @@ public class Review extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public Integer getRating() {
@@ -63,10 +75,5 @@ public class Review extends BaseEntity {
 
     public void setIsVisible(Boolean isVisible) {
         this.isVisible = isVisible;
-    }
-
-    @Override
-    public String toString() {
-        return "Review{" + "id=" + id + ", rating=" + rating + '}';
     }
 }

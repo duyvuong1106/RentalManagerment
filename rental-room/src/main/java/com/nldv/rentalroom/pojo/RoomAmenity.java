@@ -1,5 +1,6 @@
 package com.nldv.rentalroom.pojo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -7,31 +8,53 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "room_amenities")
 @IdClass(RoomAmenity.RoomAmenityId.class)
-public class RoomAmenity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class RoomAmenity {
 
     @Id
+    @Column(name = "room_id")
+    private Integer roomId;
+
+    @Id
+    @Column(name = "amenity_id")
+    private Integer amenityId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(
+            name = "room_id",
+            insertable = false,
+            updatable = false
+    )
     private Room room;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "amenity_id", nullable = false)
+    @JoinColumn(
+            name = "amenity_id",
+            insertable = false,
+            updatable = false
+    )
     private Amenity amenity;
 
     public RoomAmenity() {
     }
 
-    public RoomAmenity(Room room, Amenity amenity) {
-        this.room = room;
-        this.amenity = amenity;
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
+    public Integer getAmenityId() {
+        return amenityId;
+    }
+
+    public void setAmenityId(Integer amenityId) {
+        this.amenityId = amenityId;
     }
 
     public Room getRoom() {
@@ -50,107 +73,60 @@ public class RoomAmenity implements Serializable {
         this.amenity = amenity;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
+    public static class RoomAmenityId {
 
-        hash += room != null ? room.hashCode() : 0;
-        hash += amenity != null ? amenity.hashCode() : 0;
-
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-
-        if (!(object instanceof RoomAmenity)) {
-            return false;
-        }
-
-        RoomAmenity other = (RoomAmenity) object;
-
-        if ((this.room == null && other.room != null)
-                || (this.room != null && !this.room.equals(other.room))) {
-            return false;
-        }
-
-        if ((this.amenity == null && other.amenity != null)
-                || (this.amenity != null && !this.amenity.equals(other.amenity))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "RoomAmenity{"
-                + "room=" + room
-                + ", amenity=" + amenity
-                + '}';
-    }
-
-    public static class RoomAmenityId implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        private Integer room;
-        private Integer amenity;
+        private Integer roomId;
+        private Integer amenityId;
 
         public RoomAmenityId() {
         }
 
-        public RoomAmenityId(Integer room, Integer amenity) {
-            this.room = room;
-            this.amenity = amenity;
+        public RoomAmenityId(
+                Integer roomId,
+                Integer amenityId) {
+
+            this.roomId = roomId;
+            this.amenityId = amenityId;
         }
 
-        public Integer getRoom() {
-            return room;
+        public Integer getRoomId() {
+            return roomId;
         }
 
-        public void setRoom(Integer room) {
-            this.room = room;
+        public void setRoomId(Integer roomId) {
+            this.roomId = roomId;
         }
 
-        public Integer getAmenity() {
-            return amenity;
+        public Integer getAmenityId() {
+            return amenityId;
         }
 
-        public void setAmenity(Integer amenity) {
-            this.amenity = amenity;
+        public void setAmenityId(Integer amenityId) {
+            this.amenityId = amenityId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+
+            if (this == o) {
+                return true;
+            }
+
+            if (!(o instanceof RoomAmenityId)) {
+                return false;
+            }
+
+            RoomAmenityId that =
+                    (RoomAmenityId) o;
+
+            return roomId.equals(that.roomId)
+                    && amenityId.equals(that.amenityId);
         }
 
         @Override
         public int hashCode() {
-            int hash = 0;
-
-            hash += room != null ? room.hashCode() : 0;
-            hash += amenity != null ? amenity.hashCode() : 0;
-
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object object) {
-
-            if (!(object instanceof RoomAmenityId)) {
-                return false;
-            }
-
-            RoomAmenityId other = (RoomAmenityId) object;
-
-            if ((this.room == null && other.room != null)
-                    || (this.room != null && !this.room.equals(other.room))) {
-                return false;
-            }
-
-            if ((this.amenity == null && other.amenity != null)
-                    || (this.amenity != null && !this.amenity.equals(other.amenity))) {
-                return false;
-            }
-
-            return true;
+            return 31 * roomId.hashCode()
+                    + amenityId.hashCode();
         }
     }
 }
